@@ -293,7 +293,7 @@ function inflate(bytes) {
       }
       if (code1 == 256) {
         bufferLength = pos;
-        return;
+        return eof;
       }
       code1 -= 257;
       code1 = lengthDecode[code1];
@@ -316,7 +316,8 @@ function inflate(bytes) {
     }
   };
 
-  while (readBlock()) {}
+  while (!readBlock())
+    ;
 
   // shrink the buffer to the actual data size
   return new Uint8Array(buffer.buffer, 0, bufferLength);
@@ -396,3 +397,7 @@ ZipFile.prototype = {
     return null;
   }
 };
+
+if (typeof exports === 'object') {
+  exports.ZipFile = ZipFile;
+}
